@@ -40,9 +40,18 @@ export default function Navbar({ darkMode }) {
             ...(darkMode ? darkStyles.ticketBtn : {})
           }}
         >
-          My Tickets
+          Mis tickets
         </button>
-
+        <div>
+          <button
+            style={{
+              ...styles.LoginBtn,
+              ...(darkMode ? darkStyles.LoginBtn : {})
+            }}
+          >
+            Login (SOLO ADMIN)
+          </button>
+        </div>
         <div style={styles.avatar}></div>
       </div>
     </div>
@@ -88,6 +97,13 @@ const styles = {
     border: "1px solid #ddd",
     background: "#f9fafb"
   },
+
+  LoginBtn: {
+    padding: "8px 12px",
+    borderRadius: "6px",
+    border: "1px solid #ddd",
+    background: "#f9fafb"
+  }
 };
 
 
@@ -101,6 +117,10 @@ const darkStyles = {
     borderBottom: "1px solid #334155",
     color: "white"
   },
+  LoginBtn: {
+    background: "#334155",
+    color: "white"
+  }
  
 };
 

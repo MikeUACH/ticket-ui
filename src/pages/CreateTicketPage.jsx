@@ -10,7 +10,7 @@ export default function CreateTicketPage({ darkMode, setDarkMode }) {
       <div className="center">
         <div className="card">
           <h2>Subir ticket</h2>
-          <p>Describe tu problema...</p>
+          <p>Describe tu problema y nuestro equipo de soporte se encargara de atenderlo</p>
 
           <TicketForm />
         </div>

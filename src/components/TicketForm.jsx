@@ -55,10 +55,10 @@ export default function TicketForm() {
 
       {/* SUBJECT */}
       <div className="field">
-        <label>Subject *</label>
+        <label>Titulo<span className="asterisks">*</span></label>
         <input
           name="subject"
-          placeholder="Breve resumen del problema..."
+          placeholder="Breve resumen del problema"
           onChange={handleChange}
         />
       </div>
@@ -67,20 +67,20 @@ export default function TicketForm() {
       <div className="row">
 
         <div className="field">
-          <label>Category *</label>
+          <label>Categoria<span className="asterisks">*</span></label>
           <select name="category" onChange={handleChange}>
             <option value="">Selecciona categoria</option>
             <option value="Bug">Bug</option>
-            <option value="Access">Access</option>
+            <option value="Access">Acceso</option>
           </select>
         </div>
 
         <div className="field">
-          <label>Priority</label>
+          <label>Prioridad</label>
 
           
         <div className="priority-container">
-          {["LOW", "MEDIUM", "HIGH"].map((p) => (
+          {["BAJA", "MEDIA", "ALTA"].map((p) => (
             <button
               type="button"
               key={p}
@@ -99,7 +99,7 @@ export default function TicketForm() {
 
       {/* DESCRIPTION */}
       <div className="field">
-        <label>Descripcion *</label>
+        <label>Descripcion<span className="asterisks">*</span></label>
         <textarea
           placeholder="Explica el problema en detalle..."
           name="description"
@@ -111,7 +111,7 @@ export default function TicketForm() {
       <div className="field">
         <label>Attachment (optional)</label>
         <div className="upload-box">
-          Click to upload or drag and drop
+          Dale clic para subir un archivo
           <br />
           PNG, JPG, PDF up to 10MB
         </div>

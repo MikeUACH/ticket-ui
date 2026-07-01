@@ -176,16 +176,21 @@ textarea {
   border-radius: 50%;
 }
 
+.asterisks {
+  color: rgb(255, 56, 56);
+  margin-left: 4px;
+}
+
 /* Colors */
-.dot.low {
+.dot.baja {
   background-color: #22c55e; /* green */
 }
 
-.dot.medium {
+.dot.media {
   background-color: #f59e0b; /* orange */
 }
 
-.dot.high {
+.dot.alta {
   background-color: #ef4444; /* red */
 }
 
