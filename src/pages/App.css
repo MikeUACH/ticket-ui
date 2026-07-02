@@ -103,6 +103,10 @@ body {
   background: #3b82f6;
 }
 
+.dark .mis-ticketsbtn {
+  background: #3b82f6;
+}
+
 .dark .secondary-btn {
   background: #475569;
   color: white;
@@ -209,18 +213,89 @@ textarea {
 
 }
 
-.mis-ticketsbtn {
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 6px;
+.ticket-panel {
+  position: absolute;
+  top: 70px;
+  right: 20px;
 
+  width: 650px;
+  max-height: 500px;
+
+  overflow-y: auto;
+
+  background: white;
+
+  border-radius: 12px;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,.12);
+
+  padding: 20px;
+
+  z-index: 999;
+}
+
+.ticket-card {
   display: flex;
-  align-items: center;   /* Vertical centering */
-  justify-content: center;
-  gap: 4px;
+  justify-content: space-between;
 
+  padding: 16px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  margin-bottom: 12px;
+}
+
+.ticket-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ticket-number {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.ticket-subject {
+  color: #374151;
+}
+
+.ticket-date {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.ticket-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.dark-ticket-panel {
+  background: #1e293b;
+  color: white;
+}
+
+.dark-ticket-panel .ticket-card {
+  border: 1px solid #475569;
+  background: #334155;
+}
+
+.status-abierto {
+  color: #dc2626;
+  font-weight: bold;
+}
+
+.action-btn {
+  border: none;
+  background: none;
+
+  color: #2563eb;
+
+  cursor: pointer;
+
+  font-weight: 600;
 }
 
 /* Priority buttons */

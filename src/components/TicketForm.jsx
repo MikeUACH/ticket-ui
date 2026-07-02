@@ -5,6 +5,7 @@ import viewIconBlack from "../assets/black-closed-eye.png";
 import viewIconWhite from "../assets/white-closed-eye.png";
 import viewIconBlackOpen from "../assets/black-open-eye.png";
 import viewIconWhiteOpen from "../assets/white-open-eye.png";
+import { getSessionToken } from "../utils/session";
 export default function TicketForm({darkMode})  {
 
   console.log("TicketForm darkMode:", darkMode);
@@ -21,12 +22,9 @@ export default function TicketForm({darkMode})  {
     priority: "MEDIUM"
   });
   
-
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   }; 
-  
-
   
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
@@ -60,9 +58,20 @@ export default function TicketForm({darkMode})  {
     }));
   };
 
-
   const handleSubmit = async (e) => {
   e.preventDefault();
+  
+  const getSessionToken = () => {
+
+    let token = localStorage.getItem("sessionToken");
+
+    if (!token) {
+      token = crypto.randomUUID();
+      localStorage.setItem("sessionToken", token);
+    }
+
+    return token;
+  };
 
   // alert("HANDLE SUBMIT WORKS");
   console.log("Submitting ticket...");
@@ -73,7 +82,7 @@ export default function TicketForm({darkMode})  {
     description: form.description,
     priority: form.priority,
     deviceId: navigator.userAgent,
-    sessionToken: crypto.randomUUID()
+    sessionToken: getSessionToken()
   };
 
   try {
@@ -107,7 +116,7 @@ export default function TicketForm({darkMode})  {
         <label>Titulo<span className="asterisks">*</span></label>
         <input
           name="subject"
-          placeholder="Breve resumen del problema"
+          placeholder=""
           onChange={handleChange}
         />
       </div>
