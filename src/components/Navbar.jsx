@@ -1,6 +1,7 @@
 
 import logo from "../assets/logo.png";
-
+import ticketIcon from "../assets/ticket.png";
+import ticketIconDark from "../assets/ticket-black.png";
 export default function Navbar({ darkMode }) {
   return (
     <div
@@ -34,16 +35,8 @@ export default function Navbar({ darkMode }) {
       </div>
 
       <div style={styles.right}>
-        <button
-          style={{
-            ...styles.ticketBtn,
-            ...(darkMode ? darkStyles.ticketBtn : {})
-          }}
-        >
-          Mis tickets
-        </button>
         <div>
-          <button
+          <button 
             style={{
               ...styles.LoginBtn,
               ...(darkMode ? darkStyles.LoginBtn : {})
@@ -52,6 +45,19 @@ export default function Navbar({ darkMode }) {
             Login (SOLO ADMIN)
           </button>
         </div>
+        <button className="mis-ticketsbtn"
+          style={{
+            ...styles.ticketBtn,
+            ...(darkMode ? darkStyles.ticketBtn : {})
+          }}
+        > <span><img 
+        src={
+              darkMode ? ticketIcon : ticketIconDark
+            } alt="Ticket Icon" />
+        </span>
+          Mis tickets
+        </button>
+        
         <div style={styles.avatar}></div>
       </div>
     </div>
