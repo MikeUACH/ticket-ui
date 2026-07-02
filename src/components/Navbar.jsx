@@ -5,7 +5,6 @@ import ticketIconDark from "../assets/ticket-black.png";
 export default function Navbar({ darkMode }) {
 
   const [showTickets, setShowTickets] = useState(false);
-  
   const [tickets, setTickets] = useState([]);
 
   const loadTickets = async () => {
@@ -230,11 +229,10 @@ export default function Navbar({ darkMode }) {
                     fontWeight: "bold"
                   }}
                 >
-                  
                   MOSTRAR
                   
                 </button>
-
+                
                 <button
 
                   style={{
@@ -264,6 +262,7 @@ export default function Navbar({ darkMode }) {
     </div>
   );
 }
+
 
 
 const styles = {
