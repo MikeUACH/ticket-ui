@@ -19,7 +19,7 @@ export default function TicketForm({darkMode})  {
     subject: "",
     category: "",
     description: "",
-    priority: "MEDIUM"
+    priority: "MEDIA"
   });
   
   const handleChange = (e) => {
@@ -76,25 +76,40 @@ export default function TicketForm({darkMode})  {
   // alert("HANDLE SUBMIT WORKS");
   console.log("Submitting ticket...");
 
-  const payload = {
-    subject: form.subject,
-    category: form.category,
-    description: form.description,
-    priority: form.priority,
-    deviceId: navigator.userAgent,
-    sessionToken: getSessionToken()
-  };
+  
+  const formData = new FormData();
+
+  formData.append(
+    "ticket",
+    new Blob(
+      [
+        JSON.stringify({
+          subject: form.subject,
+          category: form.category,
+          description: form.description,
+          priority: form.priority,
+          deviceId: navigator.userAgent,
+          sessionToken: getSessionToken()
+        })
+      ],
+      { type: "application/json" }
+    )
+  );
+
+  files.forEach(file => {
+    formData.append("files", file);
+  });
+
 
   try {
     const response = await fetch(
+      
       "http://localhost:8080/api/tickets",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      }
+        {
+          method: "POST",
+          body: formData
+        }
+
     );
 
       const data = await response.json();

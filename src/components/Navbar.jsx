@@ -3,22 +3,20 @@ import { useState } from "react";
 import ticketIcon from "../assets/ticket.png";
 import ticketIconDark from "../assets/ticket-black.png";
 export default function Navbar({ darkMode }) {
-
+  
   const [showTickets, setShowTickets] = useState(false);
   const [tickets, setTickets] = useState([]);
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const loadTickets = async () => {  
+    const token = localStorage.getItem("sessionToken");
+    const response = await fetch(
+      `http://localhost:8080/api/tickets/active?sessionToken=${token}`
+    );
 
-  const loadTickets = async () => {
-  
-  const token = localStorage.getItem("sessionToken");
-
-  const response = await fetch(
-    `http://localhost:8080/api/tickets/active?sessionToken=${token}`
-  );
-
-  const data = await response.json();
-
-  setTickets(data);
-};
+    const data = await response.json();
+    
+    setTickets(data);
+  };
 
   return (
     <div
@@ -76,13 +74,15 @@ export default function Navbar({ darkMode }) {
               loadTickets();
             }
           }}
-
+          
         >
           <img
             src={darkMode ? ticketIcon : ticketIconDark}
             alt="Ticket Icon"
           />
           Mis tickets
+
+          
         </button>
         
         
@@ -219,7 +219,7 @@ export default function Navbar({ darkMode }) {
                 >
                   ● {ticket.status}
                 </span>
-
+                
                 <button
                   style={{
                     border: "none",
@@ -228,10 +228,186 @@ export default function Navbar({ darkMode }) {
                     cursor: "pointer",
                     fontWeight: "bold"
                   }}
+                  onClick={() => setSelectedTicket(ticket)}
                 >
                   MOSTRAR
-                  
                 </button>
+                {selectedTicket && (
+
+                <div className="ticket-details-overlay">
+
+                  <div className="ticket-details-modal">
+
+                    <button
+                      className="close-btn"
+                      onClick={() => setSelectedTicket(null)}
+                    >
+                      ✕
+                    </button>
+
+                    <div className="ticket-details-header">
+
+                      <button
+                        className="back-btn"
+                        onClick={() => setSelectedTicket(null)}
+                      >
+                        ← De vuelta a mis tickets
+                      </button>
+
+                      <div className="ticket-id">
+                        {selectedTicket.ticketNumber}
+                      </div>
+
+                      <h1 className="ticket-title">
+                        {selectedTicket.subject}
+                      </h1>
+
+                      <div className="ticket-badges">
+
+                        <span className="priority-badge"
+                          style={{
+                              color:
+                                selectedTicket.priority === "ALTA"
+                                  ? "#ef4444"
+                                  : selectedTicket.priority === "MEDIA"
+                                  ? "#f59e0b"
+                                  : selectedTicket.priority === "BAJA"
+                                  ? "#22c55e"
+                                  : "#64748b",                              
+                              background:
+                                  selectedTicket.priority === "ALTA"
+                                    ? "rgba(239, 68, 68, 0.15)"
+                                    : selectedTicket.priority === "MEDIA"
+                                    ? "rgba(245, 158, 11, 0.15)"
+                                    : selectedTicket.priority === "BAJA"
+                                    ? "rgba(34, 197, 94, 0.15)"
+                                    : "rgba(100, 116, 139, 0.15)",
+
+                                fontWeight: "bold",
+
+                                padding: "6px 12px",
+
+                                borderRadius: "999px",
+
+                                display: "inline-block"
+
+                            }}
+                            
+                        >
+                          {selectedTicket.priority}
+                        </span>
+
+                        <span className="status-badge">
+                          {selectedTicket.status}
+                        </span>
+
+                      </div>
+
+                    </div>
+
+                    <div className="ticket-info-grid">
+
+                      <div className="info-card">
+                        <div className="info-label">
+                          CATEGORIA
+                        </div>
+                        <div>
+                          {selectedTicket.category}
+                        </div>
+                      </div>
+
+                      <div className="info-card">
+                        <div className="info-label">
+                          SUBIDO
+                        </div>
+                        <div>
+                          {new Date(
+                            selectedTicket.createdAt
+                          ).toLocaleDateString()}
+                        </div>
+                      </div>
+
+                      <div className="info-card">
+                        <div className="info-label">
+                          ESTADO
+                        </div>
+                        <div>
+                          {selectedTicket.status}
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div className="section-card">
+
+                      <div className="section-title">
+                        DESCRIPCION
+                      </div>
+
+                      <p>
+                        {selectedTicket.description}
+                      </p>
+
+                    </div>
+
+                    <div className="section-card">
+
+                      <div className="section-title">
+                        ARCHIVOS ADJUNTOS
+                      </div>
+                    <div>
+
+                      {(selectedTicket?.attachments ?? []).length === 0 ? (
+
+                        <div>No hay archivos adjuntos</div>
+
+                      ) : (
+
+                        selectedTicket.attachments.map(file => (
+
+                          <div
+                            key={file.id}
+                            style={{
+                              marginBottom: "10px"
+                            }}
+                          >
+                            <a
+                              href={`http://localhost:8080${file.fileUrl}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              📎 {file.fileName}
+                            </a>
+                          </div>
+
+                        ))
+
+                      )}
+
+                      </div>
+
+                    </div>
+
+                    <div className="section-card">
+
+                      <div className="section-title">
+                        ACTIVIDAD
+                      </div>
+
+                      <div>
+                        Ticket creado el{" "}
+                        {new Date(
+                          selectedTicket.createdAt
+                        ).toLocaleString()}
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              )}
                 
                 <button
 
