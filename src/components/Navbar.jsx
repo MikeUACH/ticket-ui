@@ -7,6 +7,26 @@ export default function Navbar({ darkMode }) {
   const [showTickets, setShowTickets] = useState(false);
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [ticketFilter, setTicketFilter] = useState("TODOS");
+  const filteredTickets = tickets.filter(ticket => {
+      if (ticketFilter === "TODOS") {
+        return true;
+      }
+
+      if (ticketFilter === "ABIERTOS") {
+        return ticket.status === "ABIERTO";
+      }
+
+      if (ticketFilter === "RESUELTOS") {
+        return ticket.status === "RESUELTO";
+      }
+
+      if (ticketFilter === "EN_PROGRESO") {
+        return ticket.status === "EN_PROGRESO";
+      }
+
+      return true;
+    });
   const loadTickets = async () => {  
     const token = localStorage.getItem("sessionToken");
     const response = await fetch(
@@ -87,7 +107,7 @@ export default function Navbar({ darkMode }) {
         
         
       {showTickets && (
-
+        
         <div
           className="ticket-panel"
           style={{
@@ -107,12 +127,12 @@ export default function Navbar({ darkMode }) {
               ? "1px solid #334155"
               : "1px solid #e5e7eb",
 
-            borderRadius: "12px",
+            borderRadius: "16px",
 
             boxShadow:
               "0 10px 30px rgba(0,0,0,.15)",
 
-            padding: "20px",
+            padding: "24px 28px",
 
             zIndex: 9999
           }}
@@ -127,7 +147,57 @@ export default function Navbar({ darkMode }) {
           >
             Mis Tickets
           </div>
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              marginBottom: "20px"
+            }}
+          >
 
+            {[
+              ["TODOS", "Todos"],
+              ["ABIERTOS", "Abiertos"],
+              ["EN_PROGRESO", "En progreso"],
+              ["RESUELTOS", "Resueltos"]
+            ].map(([value, label]) => (
+
+              <button
+                key={value}
+                onClick={() => setTicketFilter(value)}
+                style={{
+                  border:
+                    ticketFilter === value
+                      ? "2px solid #2563eb"
+                      : "1px solid #e5e7eb",
+
+                  background:
+                    ticketFilter === value
+                      ? "#eff6ff"
+                      : "transparent",
+
+                  color:
+                    ticketFilter === value
+                      ? "#2563eb"
+                      : darkMode
+                      ? "#cbd5e1"
+                      : "#64748b",
+
+                  fontWeight: 600,
+
+                  borderRadius: "20px",
+
+                  padding: "8px 16px",
+
+                  cursor: "pointer"
+                }}
+              >
+                {label}
+              </button>
+
+            ))}
+
+          </div>
           {tickets.length === 0 && (
             <div
               style={{
@@ -140,45 +210,75 @@ export default function Navbar({ darkMode }) {
             </div>
           )}
 
-          {tickets.map(ticket => (
+          {filteredTickets.map(ticket => (
 
             <div
               key={ticket.ticketId}
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                alignItems: "flex-start",
+                alignItems: "center",
 
-                padding: "15px",
+                padding: "20px",
 
                 marginBottom: "12px",
 
-                borderRadius: "10px",
+                borderRadius: "12px",
 
                 border: darkMode
                   ? "1px solid #475569"
                   : "1px solid #e5e7eb",
 
                 background: darkMode
-                  ? "#334155"
-                  : "#f8fafc"
+                  ? "#1f2937"
+                  : "#ffffff",
+
+                boxShadow: darkMode
+                  ? "none"
+                  : "0 1px 3px rgba(0,0,0,0.05)"
               }}
             >
-
-              <div>
+                
+              <div
+                style= {{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "18px"
+                }}
+              >
 
                 <div
                   style={{
-                    fontWeight: "bold",
+                    fontWeight: "700",
+                    color: "#64748b",
+                    minWidth: "95px",
                     fontSize: "18px"
                   }}
                 >
-                  {ticket.ticketNumber}
+                  #{ticket.ticketNumber}
                 </div>
-
                 <div
                   style={{
-                    marginTop: "5px"
+                    width: "1px",
+                    height: "45px",
+                    background: darkMode
+                        ? "#475569"
+                        : "#e5e7eb"
+                  }}  
+                >
+                </div>
+                <div
+                  style= {{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "6px"
+                  }}
+                >
+                <div
+                  style={{
+                    fontWeight: 600,
+                    fontSize: "18px",
+                    marginBottom: "8px"
                   }}
                 >
                   {ticket.subject}
@@ -186,19 +286,25 @@ export default function Navbar({ darkMode }) {
 
                 <div
                   style={{
-                    fontSize: "12px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "18px",
+                    fontSize: "13px",
                     color: darkMode
                       ? "#cbd5e1"
                       : "#6b7280",
-                    marginTop: "5px"
                   }}
                 >
-                  {new Date(ticket.createdAt)
-                    .toLocaleString()}
+                  <span>📁 {ticket.category}</span>
+                  <span>
+                    {new Date(ticket.createdAt)
+                     .toLocaleString()}
+                  </span>
+                  
+                  </div>
+
                 </div>
-
               </div>
-
               <div
                 style={{
                   display: "flex",
@@ -206,31 +312,44 @@ export default function Navbar({ darkMode }) {
                   gap: "10px"
                 }}
               >
-
                 <span
                   style={{
-                    color:
+                    background: 
                       ticket.status === "ABIERTO"
-                        ? "#ef4444"
-                        : "#22c55e",
+                        ? "#dbeafe"
+                        : ticket.status === "EN_PROGRESO"
+                        ? "#fef3c7"
+                        : "#dcfce7",
+                      color: 
+                        ticket.status === "ABIERTO"
+                        ? "#2563eb"
+                        : ticket.status === "EN_PROGRESO"
+                        ? "#d97706"
+                        : "#16a34a",
+                    padding: "8px 14px",
 
-                    fontWeight: "bold"
+                    borderRadius: "999px",
+
+                    fontSize: "13px",
+
+                    fontWeight: 600
                   }}
                 >
-                  ● {ticket.status}
+                  {ticket.status}
                 </span>
                 
                 <button
                   style={{
-                    border: "none",
-                    background: "none",
-                    color: "#2563eb",
+                    border: "1px solid #d1d5db",
+                    background: "white",
+                    borderRadius: "10px",
+                    padding: "10px 18px",
                     cursor: "pointer",
-                    fontWeight: "bold"
+                    fontWeight: 600
                   }}
                   onClick={() => setSelectedTicket(ticket)}
                 >
-                  MOSTRAR
+                  👁 Mostrar
                 </button>
                 {selectedTicket && (
 
@@ -282,19 +401,15 @@ export default function Navbar({ darkMode }) {
                                     : selectedTicket.priority === "BAJA"
                                     ? "rgba(34, 197, 94, 0.15)"
                                     : "rgba(100, 116, 139, 0.15)",
+                                fontWeight: 600,
 
-                                fontWeight: "bold",
-
-                                padding: "6px 12px",
-
-                                borderRadius: "999px",
-
-                                display: "inline-block"
-
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "18px"
                             }}
                             
                         >
-                          {selectedTicket.priority}
+                          ● {selectedTicket.priority}
                         </span>
 
                         <span className="status-badge">
