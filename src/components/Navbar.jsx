@@ -2,6 +2,10 @@ import logo from "../assets/logo.png";
 import { useState } from "react";
 import ticketIcon from "../assets/ticket.png";
 import ticketIconDark from "../assets/ticket-black.png";
+import EditIconBlue from "../assets/edit-blue.png";
+import EditIconWhite from "../assets/edit-white.png";
+import blackEye from "../assets/black-open-eye.png";
+import whiteEye from "../assets/white-open-eye.png";
 export default function Navbar({ darkMode }) {
   
   const [showTickets, setShowTickets] = useState(false);
@@ -84,7 +88,8 @@ export default function Navbar({ darkMode }) {
         <button
           style={{
             ...styles.ticketBtn,
-            ...(darkMode ? darkStyles.ticketBtn : {})
+            ...(darkMode ? darkStyles.ticketBtn : {}),
+            
           }}
           
           onClick={() => {
@@ -142,7 +147,8 @@ export default function Navbar({ darkMode }) {
             style={{
               fontSize: "22px",
               fontWeight: "bold",
-              marginBottom: "15px"
+              marginBottom: "15px",
+              
             }}
           >
             Mis Tickets
@@ -326,30 +332,48 @@ export default function Navbar({ darkMode }) {
                         : ticket.status === "EN_PROGRESO"
                         ? "#d97706"
                         : "#16a34a",
-                    padding: "8px 14px",
-
+                    padding: "8px 16px",
+                    
+                    minWidth: "50px",
                     borderRadius: "999px",
 
                     fontSize: "13px",
+                    fontWeight: 600,
 
-                    fontWeight: 600
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    whiteSpace: "nowrap"
                   }}
                 >
-                  {ticket.status}
+                  {ticket.status.replace("_", " ")}
                 </span>
                 
                 <button
                   style={{
                     border: "1px solid #d1d5db",
-                    background: "white",
+                    background: darkMode
+                        ? "#475569"
+                        : "#ffffff",
                     borderRadius: "10px",
                     padding: "10px 18px",
                     cursor: "pointer",
-                    fontWeight: 600
+                    fontWeight: 600,
+                    color: darkMode
+                        ? "#ffffff" 
+                        : "#475569",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "5px"
+                        
                   }}
                   onClick={() => setSelectedTicket(ticket)}
+
                 >
-                  👁 Mostrar
+                  <img className="icon" src={darkMode ?  whiteEye: blackEye } alt="Mostrar" />
+                  
+                  Mostrar
                 </button>
                 {selectedTicket && (
 
@@ -405,7 +429,10 @@ export default function Navbar({ darkMode }) {
 
                                 display: "flex",
                                 alignItems: "center",
-                                gap: "18px"
+                                gap: "18px",
+                                borderRadius: "100px",
+                                height: "25px",
+                                width: "60px"
                             }}
                             
                         >
@@ -413,7 +440,7 @@ export default function Navbar({ darkMode }) {
                         </span>
 
                         <span className="status-badge">
-                          {selectedTicket.status}
+                          {selectedTicket.status.replace("_", " ")}
                         </span>
 
                       </div>
@@ -534,7 +561,7 @@ export default function Navbar({ darkMode }) {
                     fontWeight: "bold"
                   }}
                 >
-                  EDITAR
+                  <img className="icon" src={darkMode ?  EditIconWhite : EditIconBlue} alt="Edit" />
                 </button>
 
               </div>
@@ -601,8 +628,8 @@ const styles = {
     display: "flex",
     alignItems: "center",
     gap: "8px",
-    justifyContent: "center"
-
+    justifyContent: "center",
+    transition: "all 4s ease-in-out"
   },
 
   LoginBtn: {
