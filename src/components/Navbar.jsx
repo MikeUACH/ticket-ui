@@ -6,12 +6,16 @@ import EditIconBlue from "../assets/edit-blue.png";
 import EditIconWhite from "../assets/edit-white.png";
 import blackEye from "../assets/black-open-eye.png";
 import whiteEye from "../assets/white-open-eye.png";
+import folderWhite from "../assets/folder-white.png";
+import folderBlack from "../assets/folder-black.png";
 export default function Navbar({ darkMode }) {
   
   const [showTickets, setShowTickets] = useState(false);
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [ticketFilter, setTicketFilter] = useState("TODOS");
+  const [editingTicket, setEditingTicket] = useState(null);
+
   const filteredTickets = tickets.filter(ticket => {
       if (ticketFilter === "TODOS") {
         return true;
@@ -31,6 +35,7 @@ export default function Navbar({ darkMode }) {
 
       return true;
     });
+    
   const loadTickets = async () => {  
     const token = localStorage.getItem("sessionToken");
     const response = await fetch(
@@ -41,7 +46,49 @@ export default function Navbar({ darkMode }) {
     
     setTickets(data);
   };
+  const saveTicket = async () => {
 
+  const formData = new FormData();
+
+  formData.append(
+    "subject",
+    editingTicket.subject
+  );
+
+  formData.append(
+    "category",
+    editingTicket.category
+  );
+
+  formData.append(
+    "priority",
+    editingTicket.priority
+  );
+
+  formData.append(
+    "description",
+    editingTicket.description
+  );
+
+  if (editingTicket.newFile) {
+    formData.append(
+      "file",
+      editingTicket.newFile
+    );
+  }
+
+  await fetch(
+    `http://localhost:8080/api/tickets/${editingTicket.ticketId}`,
+    {
+      method: "PUT",
+      body: formData
+    }
+  );
+
+  await loadTickets();
+
+  setEditingTicket(null);
+};
   return (
     <div
       style={{
@@ -217,10 +264,11 @@ export default function Navbar({ darkMode }) {
           )}
 
           {filteredTickets.map(ticket => (
-
+            
             <div
               key={ticket.ticketId}
               style={{
+                position: "relative",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
@@ -244,7 +292,7 @@ export default function Navbar({ darkMode }) {
                   : "0 1px 3px rgba(0,0,0,0.05)"
               }}
             >
-                
+               
               <div
                 style= {{
                   display: "flex",
@@ -266,7 +314,7 @@ export default function Navbar({ darkMode }) {
                 <div
                   style={{
                     width: "1px",
-                    height: "45px",
+                    height: "90px",
                     background: darkMode
                         ? "#475569"
                         : "#e5e7eb"
@@ -301,7 +349,17 @@ export default function Navbar({ darkMode }) {
                       : "#6b7280",
                   }}
                 >
-                  <span>📁 {ticket.category}</span>
+                  <span
+                    style= {{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px"
+                      }}
+                    > 
+                    <img 
+                      src={darkMode ? folderWhite : folderBlack}
+                      alt="Folder icon"
+                  />{ticket.category}</span>
                   <span>
                     {new Date(ticket.createdAt)
                      .toLocaleString()}
@@ -318,20 +376,30 @@ export default function Navbar({ darkMode }) {
                   gap: "10px"
                 }}
               >
+
                 <span
                   style={{
-                    background: 
-                      ticket.status === "ABIERTO"
-                        ? "#dbeafe"
-                        : ticket.status === "EN_PROGRESO"
-                        ? "#fef3c7"
-                        : "#dcfce7",
-                      color: 
-                        ticket.status === "ABIERTO"
-                        ? "#2563eb"
-                        : ticket.status === "EN_PROGRESO"
-                        ? "#d97706"
-                        : "#16a34a",
+                    
+                    ...(ticket.status === "ABIERTO"
+                      ? {
+                          background: darkMode ? "#1e40af" : "#dbeafe",
+                          color: darkMode ? "#bfdbfe" : "#2563eb"
+                        }
+                      : ticket.status === "EN_PROGRESO"
+                      ? {
+                          background: darkMode ? "#78350f" : "#fef3c7",
+                          color: darkMode ? "#fde68a" : "#d97706"
+                        }
+                      : ticket.status === "RESUELTO"
+                      ? {
+                          background: darkMode ? "#14532d" : "#dcfce7",
+                          color: darkMode ? "#86efac" : "#16a34a"
+                        }
+                      : {
+                          background: darkMode ? "#374151" : "#e5e7eb",
+                          color: darkMode ? "#d1d5db" : "#4b5563"
+                        }),
+                 
                     padding: "8px 16px",
                     
                     minWidth: "50px",
@@ -375,6 +443,7 @@ export default function Navbar({ darkMode }) {
                   
                   Mostrar
                 </button>
+                
                 {selectedTicket && (
 
                 <div className="ticket-details-overlay">
@@ -439,7 +508,30 @@ export default function Navbar({ darkMode }) {
                           ● {selectedTicket.priority}
                         </span>
 
-                        <span className="status-badge">
+                        <span className="status-badge"
+                          style={{
+                            ...(ticket.status === "ABIERTO"
+                            ? {
+                                background: darkMode ? "#1e40af" : "#dbeafe",
+                                color: darkMode ? "#bfdbfe" : "#2563eb"
+                              }
+                            : ticket.status === "EN_PROGRESO"
+                            ? {
+                                background: darkMode ? "#78350f" : "#fef3c7",
+                                color: darkMode ? "#fde68a" : "#d97706"
+                              }
+                            : ticket.status === "RESUELTO"
+                            ? {
+                                background: darkMode ? "#14532d" : "#dcfce7",
+                                color: darkMode ? "#86efac" : "#16a34a"
+                              }
+                            : {
+                                background: darkMode ? "#374151" : "#e5e7eb",
+                                color: darkMode ? "#d1d5db" : "#4b5563"
+                              }),
+                          }}                        
+                        
+                        >
                           {selectedTicket.status.replace("_", " ")}
                         </span>
 
@@ -550,20 +642,132 @@ export default function Navbar({ darkMode }) {
                 </div>
 
               )}
-                
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "1px",
+                    right: "1px"
+                  }}
+                >
                 <button
-
+                  onClick={() => setEditingTicket(ticket)}
                   style={{
                     border: "none",
                     background: "none",
-                    color: "#2563eb",
                     cursor: "pointer",
-                    fontWeight: "bold"
+                    padding: "0",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
                   }}
                 >
-                  <img className="icon" src={darkMode ?  EditIconWhite : EditIconBlue} alt="Edit" />
+                  <img src={darkMode ?  EditIconWhite : EditIconBlue} alt="Edit" />
+                  
                 </button>
 
+                {editingTicket && (
+
+                  <div className="ticket-details-overlay">
+
+                    <div className="ticket-details-modal">
+
+                      <button
+                        className="close-btn"
+                        onClick={() => setEditingTicket(null)}
+                      >
+                        ✕
+                      </button>
+
+                      <h2>Editar Ticket</h2>
+
+                      <div className="field">
+                        <label>Título</label>
+
+                        <input
+                          value={editingTicket.subject}
+                          onChange={(e) =>
+                            setEditingTicket({
+                              ...editingTicket,
+                              subject: e.target.value
+                            })
+                          }
+                        />
+                      </div>
+
+                      <div className="field">
+                        <label>Categoría</label>
+
+                        <input
+                          value={editingTicket.category}
+                          onChange={(e) =>
+                            setEditingTicket({
+                              ...editingTicket,
+                              category: e.target.value
+                            })
+                          }
+                        />
+                      </div>
+
+                      <div className="field">
+                        <label>Prioridad</label>
+
+                        <select
+                          value={editingTicket.priority}
+                          onChange={(e) =>
+                            setEditingTicket({
+                              ...editingTicket,
+                              priority: e.target.value
+                            })
+                          }
+                        >
+                          <option value="BAJA">BAJA</option>
+                          <option value="MEDIA">MEDIA</option>
+                          <option value="ALTA">ALTA</option>
+                        </select>
+                      </div>
+
+                      <div className="field">
+                        <label>Descripción</label>
+
+                        <textarea
+                          value={editingTicket.description}
+                          onChange={(e) =>
+                            setEditingTicket({
+                              ...editingTicket,
+                              description: e.target.value
+                            })
+                          }
+                        />
+                      </div>
+
+                      <div className="field">
+                        <label>Archivo adjunto</label>
+
+                        <input
+                          type="file"
+                          onChange={(e) =>
+                            setEditingTicket({
+                              ...editingTicket,
+                              newFile: e.target.files[0]
+                            })
+                          }
+                        />
+                      </div>
+
+                      <button
+                        className="primary-btn"
+                        onClick={saveTicket}
+                      >
+                        Guardar cambios
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                )}
+                </div>
               </div>
 
             </div>
@@ -629,7 +833,6 @@ const styles = {
     alignItems: "center",
     gap: "8px",
     justifyContent: "center",
-    transition: "all 4s ease-in-out"
   },
 
   LoginBtn: {
